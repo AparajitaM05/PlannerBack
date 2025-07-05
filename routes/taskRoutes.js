@@ -58,7 +58,7 @@ router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
         const mainTask = await MainTask.findById(taskId)
         if(!mainTask) return res.status(404).json({message:"Task is not present!"})
 
-        const subTask = mainTask.subTasks.find((st)=>st.id === subTaskId)
+        const subTask = mainTask.subTasks._id(subTaskId)
         if(!subTask){
             return res.status(404).json({message: "Subtask not updated!"})
         }
