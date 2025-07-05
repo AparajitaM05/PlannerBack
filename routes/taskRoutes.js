@@ -50,7 +50,7 @@ router.get("/tasks", async(req,res)=>{
     }
 })
 //edit subtask
-router.patch(":taskId/subtasks/:subTaskId", async(req,res)=>{
+router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
     const {taskId, subTaskId} = req.params;
     const {title, completed} = req.body
 
