@@ -51,8 +51,11 @@ router.get("/tasks", async(req,res)=>{
 })
 //edit subtask
 router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
+    console.log("Received body:", req.body);
     const {taskId, subTaskId} = req.params;
     const {title, completed} = req.body
+    console.log("taskId:", taskId);
+    console.log("subTaskId:", subTaskId);
 
     try{
         const mainTask = await MainTask.findById(taskId)
@@ -65,10 +68,12 @@ router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
         if(title !== undefined) subTask.title = title;
         if(completed !== undefined) subTask.completed = completed;
 
+        console.log("Updating subtask to:", subTask);
         await mainTask.save();
         res.status(200).json(subTask)
     }
     catch(err){
+        console.log("error updating task: ",err)
         res.status(500).json({message:"Subtask not updated!!"})
     }
 
