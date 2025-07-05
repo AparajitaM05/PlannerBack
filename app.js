@@ -30,7 +30,7 @@ app.get('/', (req, res) => res.send('Welcome to Taskoo, Your personal planner!')
 // app.use('/api/blogs', blogRoutes);
 
 const taskRoutes = require('./routes/taskRoutes');
-app.use('/api', taskRoutes);
+app.use(taskRoutes);
 
 
 // Start server
