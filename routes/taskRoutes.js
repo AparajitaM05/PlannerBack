@@ -14,7 +14,8 @@ router.post("/:id/subtasks", async(req,res)=>{
         mainTask.subTasks.push(newSubTask);
 
         await mainTask.save();
-        res.status(201).json(newSubTask)
+        const addedSubtask = mainTask.subTasks[mainTask.subTasks.length - 1];
+        res.status(201).json(addedSubtask)
 
     }
     catch(error){
