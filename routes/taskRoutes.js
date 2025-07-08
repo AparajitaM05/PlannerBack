@@ -49,6 +49,42 @@ router.get("/tasks", async(req,res)=>{
 
     }
 })
+//Getting all tasks that are completed
+router.get("/subtasksCompleted",async(req,res)=>{
+    try{
+        const completedTasks = await MainTask.aggregate([
+            //unwinding the subtasks so that the 
+            {$unwind : "$subTasks"},
+            {
+                $match:{
+                    "subTasks.completed": true,
+                    "subTasks.completedAt": {$ne: null}
+                }
+            },
+            {
+                $group:{
+                    _id:{
+                        date:{
+                            $dateToString: {format: "%Y-%m-%d", date: "$subTasks.completedAt" }
+
+                        }
+                    },
+                    count: {$sum:1}
+                }
+            },
+            {
+                $project:{
+                    _id:0,
+                    date:"$_id.date",
+                    count:1
+                }
+            }
+        ]);
+        res.status(200).json(completedTasks)
+    }catch(err){
+        res.status(401).json({message:"Completed subtasks not recieved!"})
+    }
+})
 //edit subtask
 router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
     console.log("Received body:", req.body);
@@ -56,6 +92,7 @@ router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
     const {title, completed} = req.body
     console.log("taskId:", taskId);
     console.log("subTaskId:", subTaskId);
+    
 
     try{
         const mainTask = await MainTask.findById(taskId)
@@ -66,7 +103,13 @@ router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
             return res.status(404).json({message: "Subtask not updated!"})
         }
         if(title !== undefined) subTask.title = title;
-        if(completed !== undefined) subTask.completed = completed;
+        if(completed !== undefined){
+            subTask.completed = completed;
+            
+            subTask.completedAt = completed ? new Date() : null;
+            console.log("date of subtask completed: ", subTask.completedAt)
+
+        } 
 
         console.log("Updating subtask to:", subTask);
         await mainTask.save();

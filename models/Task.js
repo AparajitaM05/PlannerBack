@@ -4,7 +4,11 @@ const { v4: uuidv4 } = require("uuid");
 const subTaskSchema = new mongoose.Schema({
     // id: {type: String, default:uuidv4()},
     title: {type:String, required: true},
-    completed: {type: Boolean, required: false}
+    completed: {type: Boolean, required: false},
+    completedAt: {
+        type: Date,
+        default: null
+    }
 })
 const taskSchema = new mongoose.Schema({
     
