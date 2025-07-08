@@ -114,7 +114,8 @@ router.patch("/:taskId/subtasks/:subTaskId", async(req,res)=>{
 
         console.log("Updating subtask to:", subTask);
         await mainTask.save();
-        res.status(200).json(subTask)
+        console.log("🚀 Sending response:", subTask);
+        return res.status(200).json(subTask)
     }
     catch(err){
         console.log("error updating task: ",err)
