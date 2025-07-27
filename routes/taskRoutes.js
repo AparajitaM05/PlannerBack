@@ -1,7 +1,28 @@
 const express = require("express");
 const MainTask = require("../models/Task");
+const User = require("../models/User");
 const router = express.Router();
 
+//Authenticating the user
+router.post("/auth", async(req,res)=>{
+    const {id,pass} = req.body
+    try{
+        const user = await User.findOne({id})
+    if(!user) {
+        return res.status(401).json({message:"User not found"});
+    }
+    if(user.password != pass){
+        return res.status(401).json({message: "Invalid password"})
+    }
+
+    }catch(err){
+        return res.status(500).json({message:"Error authenticating user", error: err.message})
+
+    }
+
+    
+
+})
 // Adding subtasks to main tasks
 router.post("/:id/subtasks", async(req,res)=>{
     const id = req.params.id
