@@ -11,7 +11,7 @@ router.post("/auth", async(req,res)=>{
     if(!user) {
         return res.status(401).json({message:"User not found"});
     }
-    if(user.password != pass){
+    if(user.pass != pass){
         return res.status(401).json({message: "Invalid password"})
     }
 
@@ -22,6 +22,25 @@ router.post("/auth", async(req,res)=>{
 
     
 
+})
+//Registering the user
+router.post("/register", async(req,res)=>{
+    const {id,pass} = req.body
+    try{
+        const userCount = await User.countDocuments()
+        if(userCount>=1){
+            res.status(403).json({message:"Not more than 1 user"})
+        }
+        const newUser = new User({id,pass})
+        await newUser.save()
+
+        return res.status(201).json({message:"User created sucessfully!!"})
+
+
+    }catch(err){
+        return res.status(500).json({message:"error creating user", error:err.message})
+
+    }
 })
 // Adding subtasks to main tasks
 router.post("/:id/subtasks", async(req,res)=>{
