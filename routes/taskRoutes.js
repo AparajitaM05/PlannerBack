@@ -5,13 +5,13 @@ const router = express.Router();
 
 //Authenticating the user
 router.post("/auth", async(req,res)=>{
-    const {id,pass} = req.body
+    const {id,password} = req.body
     try{
         const user = await User.findOne({id})
     if(!user) {
         return res.status(401).json({message:"User not found"});
     }
-    if(user.pass != pass){
+    if(user.password != password){
         return res.status(401).json({message: "Invalid password"})
     }
 
@@ -25,13 +25,13 @@ router.post("/auth", async(req,res)=>{
 })
 //Registering the user
 router.post("/register", async(req,res)=>{
-    const {id,pass} = req.body
+    const {id,password} = req.body
     try{
         const userCount = await User.countDocuments()
         if(userCount>=1){
             res.status(403).json({message:"Not more than 1 user"})
         }
-        const newUser = new User({id,pass})
+        const newUser = new User({id,password})
         await newUser.save()
 
         return res.status(201).json({message:"User created sucessfully!!"})
